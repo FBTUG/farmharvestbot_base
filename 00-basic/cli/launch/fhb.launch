@@ -1,0 +1,48 @@
+<launch>
+<!-- Description: project scope global launch file, setup by switch 
+-->	
+	<!-- start basic args -->
+	<!--
+	<arg name="veh" default="$(env VEHICLE_NAME)"/>
+	-->
+	
+<!-- the things that are "on" by default: 
+ - cli
+-->
+
+<!-- start switch args -->
+<arg name="cli_enabled" default="false"/>
+<arg name="sim_enabled" default="false"/>
+<arg name="arm_enabled" default="true"/>
+<arg name="fake_arm_enabled" default="true"/>
+
+<!-- end switch args -->
+
+<!-- Start camera -->
+	<group if="$(arg cli_enabled)">
+	  <node pkg="farmharvestbot_cli" type="cli_node.py" name="fhb_cli"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_cli)/param/cli.yaml"/>
+	  </node>	 
+	</group>
+	
+
+<!-- Start sim -->
+	<group if="$(arg sim_enabled)">
+		<node pkg="turtlesim" type="turtlesim_node" name="turtlesim_node"/>
+	</group>
+	
+
+
+<!-- Start arm -->
+	<group if="$(arg arm_enabled)">
+	  <node pkg="farmharvestbot_arm" type="arm_node.py" name="fhb_arm"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_arm)/param/arm.yaml"/>
+	  </node>	 
+	</group>
+	
+
+<!-- Start fake_arm -->
+	<group if="$(arg fake_arm_enabled)">
+		<node pkg="farmharvestbot_arm" type="fake_arm_node.py" name="fhb_fake_arm"/>
+	</group>
+</launch>

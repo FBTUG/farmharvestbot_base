@@ -7,8 +7,9 @@ import rospy
 import rosnode
 import rosbag
 import rostest
-#from std_msgs.msg import String
+from geometry_msgs.msg import Point
 from geometry_msgs.msg import Twist
+from std_msgs.msg import String
 #from farmharvestbot_msgs.msg import VersionInfo
 import cmd
 import time
@@ -16,7 +17,7 @@ import traceback
 import numpy as np
 import base_ut
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 CMD_VERSION = "0.1"
 PRJNAME="farmharvestbot_base"
 
@@ -106,7 +107,34 @@ class CliVision(RootCli):
 
 #CLI-Arm level
 class CliArm(RootCli):
-    pass
+    def __init__(self):
+        cmd.Cmd.__init__(self)
+        self.cmd_pos_pub=None
+        self.arm_ctrl_state_sub=None
+        
+    def do_arm_setup(self,line):
+        """ arm environment setup"""
+        self.cmd_pos_pub = rospy.Publisher('/cmd_pos', Point, queue_size=1)
+        self.arm_ctrl_state_sub = rospy.Subscriber('/arm_ctrl_state', String, self.cbArmCtrlState)
+        rospy.loginfo("arm have been setup!" )
+
+    def cbArmCtrlState(self,rx_str):
+        rospy.loginfo("cli_node:receive from arm_ctrl_state: %s" %(rx_str))
+
+                
+    def do_cmd_pos(self,line):
+        """ arm position control
+cmd_pos [x] [y] [z]
+ex: cmd_pos 10.0 20.0 5.0
+    send /cmd_pos ( geometry_msgs/Point )
+        """    
+        [ret,pars] = self._line_set(line,["10.0","20.0","5.0"],"missing position information, use default: 10.0 20.0 5.0")
+        if self.cmd_pos_pub:
+            pnt = Point()
+            pnt.x = float(pars[0])
+            pnt.y = float(pars[1])
+            pnt.z = float(pars[2])
+            self.cmd_pos_pub.publish(pnt)
 
 #CLI-Car level
 class CliCar(RootCli):
@@ -129,6 +157,7 @@ class CliSim(RootCli):
         """Simulation environment setup"""
         self.cmd_pub = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=1)
         rospy.loginfo("/turtle1/cmd_vel Publisher setup!" )
+        
 
             
     def do_sim_turtlesim_key(self,line):

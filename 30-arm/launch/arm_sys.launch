@@ -1,0 +1,27 @@
+<launch>
+<!-- Description: arm sub system main launch 
+-->	
+	<!-- start basic args -->
+	
+<!-- the things that are "on" by default: 
+ - cli
+-->
+
+<!-- start switch args -->
+<arg name="arm_enabled" default="true"/>
+<arg name="fake_arm_enabled" default="true"/>
+<!-- end switch args -->
+
+<!-- Start arm -->
+	<group if="$(arg arm_enabled)">
+	  <node pkg="farmharvestbot_arm" type="arm_node.py" name="fhb_arm"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_arm)/param/arm.yaml"/>
+	  </node>	 
+	</group>
+	
+
+<!-- Start fake_arm -->
+	<group if="$(arg fake_arm_enabled)">
+		<node pkg="farmharvestbot_arm" type="fake_arm_node.py" name="fhb_fake_arm"/>
+	</group>
+</launch>
