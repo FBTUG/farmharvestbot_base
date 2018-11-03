@@ -14,6 +14,8 @@
 #    /cmd_pos ( geometry_msgs/Point ) # position control
 #    /cmd_vel ( geometry_msgs/Twist ) # velocity control
 #    /serial_rx ( std_msgs/String ) # string need to receive from serial
+# Actions:
+#    FhbAct
 # Reference: 
 #    FarmBot G-code command list: https://github.com/FarmBot/farmbot-arduino-firmware#pin-numbering
 # Test Hint:
@@ -32,15 +34,16 @@ from geometry_msgs.msg import Point
 import actionlib
 from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
+from fhb_utils import Consts,FhbActSrv
 
 STATUS_OK = "R00"
 STATUS_CMDDONE="R02"
 
 #FHB action server
-class ArmActSrv(object):
+class ArmActSrv(FhbActSrv):
     # create messages that are used to publish feedback/result
-    _feedback = FhbActFeedback()
-    _result = FhbActResult()
+    #_feedback = FhbActFeedback()
+    #_result = FhbActResult()
 
     def __init__(self, name):
         self._action_name = name
@@ -60,7 +63,7 @@ class ArmActSrv(object):
         rospy.loginfo('%s: Executing...' % (self._action_name))
         
         # start executing the action
-        if goal.act_id>=200:
+        if goal.act_id>=Consts.ACTID_START_ARM:
             for i in range(5):
                 # check that preempt has not been requested by the client
                 if self._as.is_preempt_requested():
@@ -73,16 +76,13 @@ class ArmActSrv(object):
                 self._as.publish_feedback(self._feedback)
                 # this step is not necessary, the sequence is computed at 1 Hz for demonstration purposes
                 r.sleep()
+        else:
+            success = False
           
         if success:
-            # reply a result for debug purpose
-            self._result.status = GoalStatus.SUCCEEDED #1 # 0-ok, >1 error code
-            self._result.error_level =2 # 0-warning, 1-error, 2-fatal error 
-            self._result.error_msg ="success"
-            
-            rospy.loginfo('%s: Succeeded' % self._action_name)
-            
-            self._as.set_succeeded(self._result)
+            self.success_result("success")
+        else:
+            self.success_result("fail, not act_id not in valid range")
             
 # Rx /cmd_pos, Tx serial
 # Rx serial, Tx /arm_ctrl_state reply to user

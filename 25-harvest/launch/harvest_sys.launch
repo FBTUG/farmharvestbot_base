@@ -1,0 +1,22 @@
+<launch>
+<!-- Description: arm sub system main launch 
+-->	
+	<!-- start basic args -->
+	
+<!-- the things that are "on" by default: 
+ - cli
+-->
+
+<!-- start switch args -->
+<arg name="harvest_enabled" default="true"/>
+<!-- end switch args -->
+
+<!-- Start harvest -->
+	<group if="$(arg harvest_enabled)">
+	  <node pkg="farmharvestbot_harvest" type="harvest_node.py" name="fhb_harvest"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_harvest)/param/harvest.yaml"/>
+	  </node>	 
+	</group>
+	
+
+</launch>

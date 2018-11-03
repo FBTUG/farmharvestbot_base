@@ -17,11 +17,12 @@ import traceback
 import numpy as np
 import base_ut
 from arm import Arm
-from fhb_utils import Consts
+
 
 import actionlib
 from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
+from fhb_utils import Consts
 
 VERSION = "0.0.2"
 CMD_VERSION = "0.1"
@@ -65,6 +66,7 @@ class BaseCli(RootCli):
         #sub level commands
         self.cli_sim = CliSim()
         self.cli_test = CliTest()
+        self.cli_harvest = CliHarvest()
         self.cli_vision = CliVision()
         self.cli_arm = CliArm()
         self.cli_car = CliCar()
@@ -85,6 +87,11 @@ class BaseCli(RootCli):
         """simulation sub command directory"""
         self.cli_vision.prompt = self.prompt[:-1]+':vision>'
         self.cli_vision.cmdloop()
+
+    def do_harvest(self,line):
+        """simulation sub command directory"""
+        self.cli_harvest.prompt = self.prompt[:-1]+':harvest>'
+        self.cli_harvest.cmdloop()
 
     def do_arm(self,line):
         """simulation sub command directory"""
@@ -107,6 +114,43 @@ class BaseCli(RootCli):
         self.cli_test.cmdloop()
 
 ############ commands  ####################
+#CLI-Vision level
+class CliHarvest(RootCli):
+    def cbFeedback(self,feedback):
+            rospy.loginfo("feedback: %s" %(feedback))
+            
+    def do_actionclient(self,line):
+        """ harvest action client example"""
+        # Creates the SimpleActionClient, passing the type of the action
+        # (FibonacciAction) to the constructor.
+        client = actionlib.SimpleActionClient('harvest_act', FhbActAction)
+    
+        # Waits until the action server has started up and started
+        # listening for goals.
+        client.wait_for_server()
+    
+        # Creates a goal to send to the action server.
+        goal = FhbActGoal()
+        #a gold for debug purpose
+        goal.act_id=Consts.ACTID_START_HARVEST
+        goal.act_subid=3
+        goal.i1=4
+        goal.i2=5
+        goal.f1=6.0
+        goal.f2=7.0
+        goal.line="abc"
+    
+        # Sends the goal to the action server. assign feedback callback
+        # send_goal(self, goal, done_cb=None, active_cb=None, feedback_cb=None)
+        client.send_goal(goal,None,None,self.cbFeedback)
+    
+        # Waits for the server to finish performing the action.
+        client.wait_for_result()
+    
+        # Prints out the result of executing the action
+        rospy.loginfo( client.get_result())  # A FibonacciResult
+
+
 #CLI-Vision level
 class CliVision(RootCli):
     pass
@@ -157,7 +201,7 @@ ex: cmd_pos 10.0 20.0 5.0
         # Creates a goal to send to the action server.
         goal = FhbActGoal()
         #a gold for debug purpose
-        goal.act_id=200
+        goal.act_id=Consts.ACTID_START_ARM
         goal.act_subid=3
         goal.i1=4
         goal.i2=5
