@@ -24,7 +24,7 @@ from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
 from fhb_utils import Consts
 
-VERSION = "0.0.2"
+VERSION = "0.0.3"
 CMD_VERSION = "0.1"
 PRJNAME="farmharvestbot_base"
 
@@ -114,7 +114,7 @@ class BaseCli(RootCli):
         self.cli_test.cmdloop()
 
 ############ commands  ####################
-#CLI-Vision level
+#CLI-Harvest level
 class CliHarvest(RootCli):
     def cbFeedback(self,feedback):
             rospy.loginfo("feedback: %s" %(feedback))
@@ -122,7 +122,6 @@ class CliHarvest(RootCli):
     def do_actionclient(self,line):
         """ harvest action client example"""
         # Creates the SimpleActionClient, passing the type of the action
-        # (FibonacciAction) to the constructor.
         client = actionlib.SimpleActionClient('harvest_act', FhbActAction)
     
         # Waits until the action server has started up and started
@@ -132,13 +131,8 @@ class CliHarvest(RootCli):
         # Creates a goal to send to the action server.
         goal = FhbActGoal()
         #a gold for debug purpose
-        goal.act_id=Consts.ACTID_START_HARVEST
-        goal.act_subid=3
-        goal.i1=4
-        goal.i2=5
-        goal.f1=6.0
-        goal.f2=7.0
-        goal.line="abc"
+        goal.act_id=Consts.ACTID_HARVEST_GOAL
+        goal.act_subid=1 # full farm
     
         # Sends the goal to the action server. assign feedback callback
         # send_goal(self, goal, done_cb=None, active_cb=None, feedback_cb=None)
@@ -191,7 +185,6 @@ ex: cmd_pos 10.0 20.0 5.0
     def do_actionclient(self,line):
         """ arm action client example"""
         # Creates the SimpleActionClient, passing the type of the action
-        # (FibonacciAction) to the constructor.
         client = actionlib.SimpleActionClient('arm_act', FhbActAction)
     
         # Waits until the action server has started up and started

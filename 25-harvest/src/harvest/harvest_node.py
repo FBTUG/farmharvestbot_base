@@ -39,11 +39,11 @@ from fhb_utils import Consts,FhbActSrv
 
 #FHB action server
 class HarvestActSrv(FhbActSrv):
-    # create messages that are used to publish feedback/result
-    #_feedback = FhbActFeedback()
-    #_result = FhbActResult()
+    def __init__(self, name):
+        self._action_name = name
+        self._as = actionlib.SimpleActionServer(self._action_name, FhbActAction, execute_cb=self.execute_cb, auto_start = False)
+        self._as.start()
 
-    pass
 # Rx /cmd_pos, Tx serial
 # Rx serial, Tx /arm_ctrl_state reply to user
 class HarvestNode():
