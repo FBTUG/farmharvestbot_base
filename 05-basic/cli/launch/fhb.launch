@@ -11,10 +11,10 @@
 -->
 
 <!-- start switch args -->
-<arg name="cli_enabled" default="false"/>
+<arg name="cli_enabled" default="true"/>
 <arg name="sim_enabled" default="false"/>
 <arg name="arm_enabled" default="true"/>
-<arg name="fake_arm_enabled" default="true"/>
+<arg name="fake_arm_enabled" default="false"/>
 
 <!-- end switch args -->
 

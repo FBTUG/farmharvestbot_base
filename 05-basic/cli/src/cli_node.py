@@ -19,6 +19,10 @@ import base_ut
 from arm import Arm
 from fhb_utils import Consts
 
+import actionlib
+from actionlib_msgs.msg import GoalStatus
+from farmharvestbot_msgs.msg import *
+
 VERSION = "0.0.2"
 CMD_VERSION = "0.1"
 PRJNAME="farmharvestbot_base"
@@ -123,7 +127,7 @@ class CliArm(RootCli):
     def cbArmCtrlState(self,rx_str):
         rospy.loginfo("cli_node:receive from arm_ctrl_state: %s" %(rx_str))
 
-                
+              
     def do_cmd_pos(self,line):
         """ arm position control
 cmd_pos [x] [y] [z]
@@ -137,7 +141,43 @@ ex: cmd_pos 10.0 20.0 5.0
             pnt.y = float(pars[1])
             pnt.z = float(pars[2])
             self.cmd_pos_pub.publish(pnt)
-
+    def cbFeedback(self,feedback):
+            rospy.loginfo("feedback: %s" %(feedback))
+            
+    def do_actionclient(self,line):
+        """ arm action client example"""
+        # Creates the SimpleActionClient, passing the type of the action
+        # (FibonacciAction) to the constructor.
+        client = actionlib.SimpleActionClient('arm_act', FhbActAction)
+    
+        # Waits until the action server has started up and started
+        # listening for goals.
+        client.wait_for_server()
+    
+        # Creates a goal to send to the action server.
+        goal = FhbActGoal()
+        #a gold for debug purpose
+        goal.act_id=200
+        goal.act_subid=3
+        goal.i1=4
+        goal.i2=5
+        goal.f1=6.0
+        goal.f2=7.0
+        goal.line="abc"
+    
+        # Sends the goal to the action server. assign feedback callback
+        # send_goal(self, goal, done_cb=None, active_cb=None, feedback_cb=None)
+        client.send_goal(goal,None,None,self.cbFeedback)
+    
+        # Waits for the server to finish performing the action.
+        client.wait_for_result()
+    
+        # Prints out the result of executing the action
+        rospy.loginfo( client.get_result())  # A FibonacciResult
+        
+        
+    
+    
 #CLI-Car level
 class CliCar(RootCli):
     pass

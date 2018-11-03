@@ -12,6 +12,7 @@ project(farmharvestbot_msgs)
 find_package(catkin REQUIRED COMPONENTS
   std_msgs
   message_generation
+  actionlib
 )
 
 ################################################################################
@@ -28,10 +29,17 @@ add_message_files(
   Sound.msg
 )
 
+add_action_files(
+   FILES
+   FhbAct.action
+ )
+ 
 generate_messages(
   DEPENDENCIES
   std_msgs
+  actionlib
 )
+
 
 ################################################################################
 # Declare ROS dynamic reconfigure parameters
