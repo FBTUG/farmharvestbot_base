@@ -16,6 +16,8 @@ import time
 import traceback
 import numpy as np
 import base_ut
+from arm import Arm
+from fhb_utils import Consts
 
 VERSION = "0.0.2"
 CMD_VERSION = "0.1"
@@ -145,6 +147,13 @@ class CliTest(RootCli):
     def do_test_exception(self,line):
         """Test exception condition"""
         int("a")
+    def do_test_tmp(self,line):
+        """Current test"""
+        arm = Arm()
+        
+        rospy.loginfo("ACTID_START_HARVET=%i" % Consts.ACTID_START_HARVEST)
+        rospy.loginfo("arm.link_cnt=%i" % arm.link_cnt)
+
     def do_ut_example(self,line):
         """Unit test example"""
 

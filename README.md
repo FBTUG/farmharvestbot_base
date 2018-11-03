@@ -2,7 +2,7 @@
 
 Developer document: 
 
-https://paper.dropbox.com/doc/FBTUG-FarmHarvestBot--AQiwHl3MlELcldlEFxtdvGDiAg-an6KPj5SZoAu3fhDajFhY
+https://paper.dropbox.com/doc/FBTUG-FarmHarvestBot--AQ5fXbSM9i_eR0umPynqdE_eAg-x45BpJVL07ZnWNeqh2YBt
 
 User manual: 
 

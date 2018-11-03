@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>farmharvestbot_base</name>
+  <name>farmharvestbot_utils</name>
   <version>0.0.1</version>
-  <description>The farmharvestbot_base package</description>
+  <description>The farmharvestbot_utils package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
