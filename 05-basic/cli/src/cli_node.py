@@ -10,6 +10,7 @@ import rostest
 from geometry_msgs.msg import Point
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
+from diagnostic_msgs.msg import DiagnosticArray
 #from farmharvestbot_msgs.msg import VersionInfo
 import cmd
 import time
@@ -22,9 +23,9 @@ from arm import Arm
 import actionlib
 from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
-from fhb_utils import Consts
+from fhb_utils import Consts,FhbActSrv,FhbNode
 
-VERSION = "0.0.3"
+VERSION = "0.0.4"
 CMD_VERSION = "0.1"
 PRJNAME="farmharvestbot_base"
 
@@ -66,6 +67,7 @@ class BaseCli(RootCli):
         #sub level commands
         self.cli_sim = CliSim()
         self.cli_test = CliTest()
+        self.cli_sys = CliSys()
         self.cli_harvest = CliHarvest()
         self.cli_vision = CliVision()
         self.cli_arm = CliArm()
@@ -83,6 +85,11 @@ class BaseCli(RootCli):
         print(output)
 
 ############ sub level commands ####################            
+    def do_sys(self,line):
+        """sys sub command directory"""
+        self.cli_sys.prompt = self.prompt[:-1]+':sys>'
+        self.cli_sys.cmdloop()
+
     def do_vision(self,line):
         """simulation sub command directory"""
         self.cli_vision.prompt = self.prompt[:-1]+':vision>'
@@ -114,10 +121,35 @@ class BaseCli(RootCli):
         self.cli_test.cmdloop()
 
 ############ commands  ####################
+#CLI-Sysstem level
+class CliSys(RootCli):
+    def __init__(self):
+        cmd.Cmd.__init__(self)
+        self.stat_sub = None
+    def do_monitor_statistic(self,line):
+        """ sys monitor statistic example
+monitor_statistic [enable]
+ex: monitor_statistic 1
+    enable statistic monitor
+        """
+        [ret,pars] = self._line_set(line,["1"],"missing enable information, use default: 1")
+        if pars[0]=="1":
+            if not self.stat_sub:
+                self.stat_sub = rospy.Subscriber('/diagnostics', DiagnosticArray, self.cbDiagnostics)
+                rospy.loginfo("sys monitor statistic been setup!" )
+        else:
+            if self.stat_sub:
+                self.stat_sub.unregister()
+                self.stat_sub = None
+    def cbDiagnostics(self,diag):
+        rospy.loginfo("cli_node:receive from /diagnostics: %s" %(diag))
+        
+
 #CLI-Harvest level
 class CliHarvest(RootCli):
+        
     def cbFeedback(self,feedback):
-            rospy.loginfo("feedback: %s" %(feedback))
+        rospy.loginfo("feedback: %s" %(feedback))
             
     def do_actionclient(self,line):
         """ harvest action client example"""

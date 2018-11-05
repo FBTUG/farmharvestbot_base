@@ -11,7 +11,8 @@ class Consts():
     #ACTID_START_HARVEST
     ACTID_HARVEST_GOAL = ACTID_START_HARVEST+1
     _actname = {ACTID_HARVEST_GOAL:"HarvestGoal"}
-    
+
+
 class MyUtils():
     def __init__(self):
         pass

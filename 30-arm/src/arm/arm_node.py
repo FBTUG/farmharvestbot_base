@@ -34,7 +34,7 @@ from geometry_msgs.msg import Point
 import actionlib
 from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
-from fhb_utils import Consts,FhbActSrv
+from fhb_utils import Consts,FhbActSrv,FhbNode
 
 STATUS_OK = "R00"
 STATUS_CMDDONE="R02"
@@ -86,7 +86,7 @@ class ArmActSrv(FhbActSrv):
             
 # Rx /cmd_pos, Tx serial
 # Rx serial, Tx /arm_ctrl_state reply to user
-class ArmNode():
+class ArmNode(FhbNode):
     def __init__(self):
         self.fba = None # farmbot class
         self.arm_ctrl_state_pub = None # arm_statusupdate publisher

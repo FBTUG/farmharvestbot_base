@@ -3,6 +3,33 @@ import actionlib
 from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
 from fhb_utils import Consts
+import diagnostic_updater
+import diagnostic_msgs
+
+#all statistic suggest to have this parent
+class FhbStatistic:
+    def __init__(self,name):
+        self.fruit_cnt=0
+        self.name = name
+        self.setup()
+        self.local_init()
+
+    def setup(self):
+        self.updater = diagnostic_updater.Updater()
+        self.updater.setHardwareID(self.name)
+        self.updater.add("%s_statistic" %(self.name), self.produce_statistic)
+    def local_init(self):
+        pass
+    def produce_statistic(self, stat):
+        stat.summary(diagnostic_msgs.msg.DiagnosticStatus.OK, "%s statistic" %(self.name))
+        self.stat_add(stat)
+        return stat
+    #replace this
+    def stat_add(self,stat):
+        stat.add("fruit_cnt", self.fruit_cnt)
+        self.fruit_cnt= self.fruit_cnt+1
+
+
 #FHB action server
 class FhbActSrv(object):
     # create messages that are used to publish feedback/result
@@ -62,3 +89,8 @@ class FhbActSrv(object):
             self.success_result("success")
         else:
             self.success_result("fail, not act_id not in valid range")
+
+#all nodes suggest to have this parent
+class FhbNode():
+    def __init__(self, name):
+        pass

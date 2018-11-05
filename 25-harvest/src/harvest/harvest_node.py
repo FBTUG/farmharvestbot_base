@@ -1,43 +1,47 @@
 #!/usr/bin/env python
-# Description: node of arm manager
+# Description: node of harvest manager
 #    features:
-#        provide higher level position/velocity/torque control
 #    logic:
 #        rosserial already have rx gcode, tx report.
 #        
 # Author: wuulong@gmail.com 
 # Pubs: 
-#    /arm_joint_states ( sensor_msgs/JointState ) # join_state
-#    /arm_ctrl_state ( String? ) # status update system reply
-#    /serial_tx ( std_msgs/String ) # string want to send to serial
 # Subs:
-#    /cmd_pos ( geometry_msgs/Point ) # position control
-#    /cmd_vel ( geometry_msgs/Twist ) # velocity control
-#    /serial_rx ( std_msgs/String ) # string need to receive from serial
 # Actions:
 #    FhbAct
+# Statistic:
+#    FhbStatistic
 # Reference: 
-#    FarmBot G-code command list: https://github.com/FarmBot/farmbot-arduino-firmware#pin-numbering
 # Test Hint:
-#    rostopic pub -r 1 /cmd_pos geometry_msgs/Point '{ x: 0, y: 0, z: 0 }'
-#    rostopic pub -r 1 /cmd_vel geometry_msgs/Twist '{ linear : {  x: 0, y: 0, z: 0 }, angular: {  x: 0, y: 0, z: 0 } }'
-#    rostopic pub -r 1 /serial_rx std_msgs/String '{ data: R00 }'
-#    rostopic echo /arm_ctrl_state
 
 
 import rospy
 import harvest
-from std_msgs.msg import String
-from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Point
 
 import actionlib
 from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
-from fhb_utils import Consts,FhbActSrv
+from fhb_utils import Consts,FhbActSrv,FhbNode,FhbStatistic
 
+import diagnostic_updater
+import diagnostic_msgs
 
-#FHB action server
+#harvest statistic
+class HarvestStatistic(FhbStatistic):
+        
+    def local_init(self):
+        self.fruit_cnt=1
+        
+
+            
+    def stat_add(self,stat):
+        stat.add("fruit_cnt", self.fruit_cnt)
+        self.fruit_cnt= self.fruit_cnt+1
+    def update(self):
+        self.updater.update() #call when need to update statistic
+        
+
+#harvest action server
 class HarvestActSrv(FhbActSrv):
     def __init__(self, name):
         self._action_name = name
@@ -46,7 +50,7 @@ class HarvestActSrv(FhbActSrv):
 
 # Rx /cmd_pos, Tx serial
 # Rx serial, Tx /arm_ctrl_state reply to user
-class HarvestNode():
+class HarvestNode(FhbNode):
     def __init__(self):
         self.fba = None # farmbot class
         self.actsrv = None 
@@ -64,9 +68,12 @@ def main():
     rospy.loginfo("harvest_node started")
 
     hn = HarvestNode()
-    rate = rospy.Rate(10) # 10hz
+    hs = HarvestStatistic("harvest")
+
+    rate = rospy.Rate(1) # 10hz
     while not rospy.is_shutdown():
         # get rx from rosserial, translate to ctrl_state
+        hs.update()
         rate.sleep() 
        
 
