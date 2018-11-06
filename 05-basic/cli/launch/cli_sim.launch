@@ -1,4 +1,0 @@
-<launch>
-  <node pkg="farmharvestbot_base" type="cli_node.py" name="fhb_cli"  output="screen"/>
-  <node pkg="turtlesim" type="turtlesim_node" name="turtlesim_node"/>
-</launch>

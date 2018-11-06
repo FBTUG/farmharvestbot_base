@@ -1,5 +1,0 @@
-<launch>
-  <node pkg="farmharvestbot_cli" type="cli_node.py" name="fhb_cli"  output="screen">
-	<rosparam command="load" file="$(find farmharvestbot_cli)/param/cli.yaml"/>
-  </node>
-</launch>

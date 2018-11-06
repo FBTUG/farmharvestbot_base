@@ -7,7 +7,7 @@
 	-->
 	
 <!-- the things that are "on" by default: 
- - cli
+ - cli_enabled, harvest_enabled, vision_enabled,arm_enabled,car_enabled
 -->
 
 <!-- start switch args -->

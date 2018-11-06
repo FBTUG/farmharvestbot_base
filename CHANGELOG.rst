@@ -4,6 +4,16 @@ Changelog for farmharvestbot_base
 
 current
 ------------------
+
+0.1 (2018-11-06)
+------------------
+* docs:version: V0.1 public release
+* Contributors: WuLung Hsu
+
+
+0.0.5 (2018-11-06)
+------------------
+* new:all: V0.0.5 add vision,car node supported
 * Contributors: WuLung Hsu
 
 
