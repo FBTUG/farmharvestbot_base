@@ -1,0 +1,21 @@
+<launch>
+<!-- Description: arm sub system main launch 
+-->	
+	<!-- start basic args -->
+	
+<!-- the things that are "on" by default: 
+ - cli
+-->
+
+<!-- start switch args -->
+<arg name="vision_enabled" default="true"/>
+<!-- end switch args -->
+
+<!-- Start vision -->
+	<group if="$(arg vision_enabled)">
+	  <node pkg="farmharvestbot_vision" type="vision_node.py" name="fhb_vision"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_vision)/param/vision.yaml"/>
+	  </node>	 
+	</group>
+
+</launch>

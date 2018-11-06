@@ -12,7 +12,14 @@ class Consts():
     ACTID_HARVEST_GOAL = ACTID_START_HARVEST+1
     _actname = {ACTID_HARVEST_GOAL:"HarvestGoal"}
 
-
+    # return "" if not defined, range in ACTID_START_HARVEST->ACTID_START_SIM+100
+    def par_to_group(self,act_id):
+        grp_name_def=["harvest","cli","vision","arm","car","pe","sim"]
+        grp_name =""
+        for i in range(7):
+            if act_id>= (i+1)*100 and act_id<(i+2)*100:
+                grp_name = grp_name_def[i]
+        return grp_name
 class MyUtils():
     def __init__(self):
         pass

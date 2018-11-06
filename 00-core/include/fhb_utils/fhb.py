@@ -66,7 +66,7 @@ class FhbActSrv(object):
         self._feedback.progrsss=10
         
         # publish info to the console for the user
-        rospy.loginfo('%s: Executing... Goal %s=\n%s' % (self._action_name, Consts._actname[goal.act_id],  goal))
+        rospy.loginfo('%s: Executing... Goal =\n%s' % (self._action_name,  goal))
         
         # start executing the action
         if goal.act_id>=Consts.ACTID_START_HARVEST:

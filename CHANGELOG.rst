@@ -2,27 +2,32 @@
 Changelog for farmharvestbot_base
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+current
+------------------
+* Contributors: WuLung Hsu
+
+
 0.0.4 (2018-11-06)
 ------------------
 * new:harvest:statistic architecture support
-* Contributors: WuLung
+* Contributors: WuLung Hsu
 
 0.0.3 (2018-11-03)
 ------------------
 * new:harvest: minor improve, update to V0.0.3
 * new:harvest:add harvest node with action server support
 * new:arm:add FhbAction support, arm as actionserver, cli have action client example
-* Contributors: WuLung
+* Contributors: WuLung Hsu
 
 0.0.2 (2018-10-31)
 ------------------
 * new:fhb_utils:add library support
 * new:arm: add arm, fake_arm
 * new:msgs: add user define messages
-* Contributors: WuLung
+* Contributors: WuLung Hsu
 
 0.0.1 (2018-10-30)
 ------------------
 * add first version CLI with 2 level directory and basic ready
 * Initial commit
-* Contributors: WuLung
+* Contributors: WuLung Hsu

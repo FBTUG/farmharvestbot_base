@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>farmharvestbot_vision</name>
+  <version>0.0.4</version>
+  <description>The farmharvestbot_vision package</description>
+
+  <maintainer email="wulong@gmail.com">WuLung Hsu</maintainer> 
+  <license>MIT</license>
+  <author email="wuulong@gmail.com">WuLung Hsu</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>rostest</build_depend>
+  <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>std_msgs</build_export_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+</package>

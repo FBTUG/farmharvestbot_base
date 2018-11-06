@@ -1,0 +1,21 @@
+<launch>
+<!-- Description: arm sub system main launch 
+-->	
+	<!-- start basic args -->
+	
+<!-- the things that are "on" by default: 
+ - cli
+-->
+
+<!-- start switch args -->
+<arg name="car_enabled" default="true"/>
+<!-- end switch args -->
+
+<!-- Start car -->
+	<group if="$(arg car_enabled)">
+	  <node pkg="farmharvestbot_car" type="car_node.py" name="fhb_car"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_car)/param/car.yaml"/>
+	  </node>	 
+	</group>
+
+</launch>
