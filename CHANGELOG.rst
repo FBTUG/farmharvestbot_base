@@ -5,6 +5,12 @@ Changelog for farmharvestbot_base
 current
 ------------------
 
+0.1.1 (2018-11-09)
+------------------
+* new:test: V0.1.1 add unittest framework
+* Contributors: WuLung Hsu
+
+
 0.1 (2018-11-06)
 ------------------
 * docs:version: V0.1 public release

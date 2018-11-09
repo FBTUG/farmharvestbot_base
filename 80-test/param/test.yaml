@@ -1,0 +1,3 @@
+# CLI Environment Parameters
+# mode: 0-default mode, 1-engineer mode
+  results_dir: ""

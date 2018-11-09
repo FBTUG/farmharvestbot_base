@@ -1,0 +1,21 @@
+<launch>
+<!-- Description: arm sub system main launch 
+-->	
+	<!-- start basic args -->
+	
+<!-- the things that are "on" by default: 
+ - cli
+-->
+
+<!-- start switch args -->
+<arg name="test_enabled" default="true"/>
+<!-- end switch args -->
+
+<!-- Start test -->
+	<group if="$(arg test_enabled)">
+	  <node pkg="farmharvestbot_test" type="test_node.py" name="fhb_test"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_test)/param/test.yaml"/>
+	  </node>	 
+	</group>
+
+</launch>

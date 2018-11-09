@@ -1,11 +1,44 @@
 import rospy
+import rospkg
+import rosbag
 import actionlib
 from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
 from fhb_utils import Consts
 import diagnostic_updater
 import diagnostic_msgs
+import subprocess, os, signal
 
+#misc utility functions
+class FhbMisc:
+    def __init__(self):
+        pass
+    def bag_play_record(self,cmd_record,cmd_play, b_wait):
+        """play bag, record another and wait
+        """
+        self.p_record = subprocess.Popen(cmd_record, stdin=subprocess.PIPE, shell=True, cwd=".")
+        self.p_play = subprocess.Popen(cmd_play, stdin=subprocess.PIPE, shell=True, cwd=".")
+        self.p_play.wait()
+        self.p_record.wait()
+
+    def get_package_dir(self,package_name):
+        # get an instance of RosPack with the default search paths
+        rospack = rospkg.RosPack()
+        # get the file path for rospy_tutorials
+        pkg_path = rospack.get_path(package_name)
+        return pkg_path
+    def bag_have_msg_from_topic(self,bagfile, topic,b_show=False):
+        msg_exist=False
+        bag = rosbag.Bag(bagfile)
+        for topic, msg, t in bag.read_messages(topics=[topic]):
+            if b_show:
+                rospy.loginfo("recorded msg=%s" %(msg))
+            msg_exist=True
+        bag.close()
+        if msg_exist == False:
+            if b_show:
+                rospy.loginfo("No msg recorded")
+        return msg_exist
 #all statistic suggest to have this parent
 class FhbStatistic:
     def __init__(self,name):

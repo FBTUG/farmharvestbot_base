@@ -18,6 +18,8 @@
 <arg name="fake_arm_enabled" default="false"/>
 <arg name="car_enabled" default="true"/>
 <arg name="sim_enabled" default="false"/>
+<arg name="test_enabled" default="false"/>
+
 
 <!-- end switch args -->
 
@@ -69,6 +71,13 @@
 <!-- Start sim -->
 	<group if="$(arg sim_enabled)">
 		<node pkg="turtlesim" type="turtlesim_node" name="turtlesim_node"/>
+	</group>
+
+<!-- Start test -->
+	<group if="$(arg test_enabled)">
+	  <node pkg="farmharvestbot_test" type="test_node.py" name="fhb_test"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_test)/param/test.yaml"/>
+	  </node>	 
 	</group>
 
 </launch>

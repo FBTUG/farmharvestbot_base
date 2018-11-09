@@ -25,6 +25,8 @@ from actionlib_msgs.msg import GoalStatus
 from farmharvestbot_msgs.msg import *
 from fhb_utils import Consts,FhbActSrv,FhbNode
 
+import subprocess, os, signal
+
 VERSION = "0.0.5"
 CMD_VERSION = "0.1"
 PRJNAME="farmharvestbot_base"
@@ -263,7 +265,34 @@ class CliTest(RootCli):
         """Unit test example"""
 
         rostest.rosrun('farmharvest_base', 'vision_tester_node', base_ut.VisionTesterNode)
+    def do_bagtest_example(self,line):
+        """test by bag file example"""
+        #this test need to manual setup record duration, the duration need > bag play time + response time of expacted behavior
+        #this example need ./big.bag 
+        cmd_record="rosbag record --duration=17 -O result.bag -e '/harvest_act/result'"
+        cmd_play="rosbag play big.bag --topics /harvest_act/goal"
+        self.p_record = subprocess.Popen(cmd_record, stdin=subprocess.PIPE, shell=True, cwd=".")
+        self.p_play = subprocess.Popen(cmd_play, stdin=subprocess.PIPE, shell=True, cwd=".")
+        self.p_play.wait()
+        self.p_record.wait()
+        
+        #check there are records in recorded file
+        bag = rosbag.Bag('result.bag')
+        msg_exist=False
+        for topic, msg, t in bag.read_messages(topics=['/harvest_act/result']):
+             rospy.loginfo("recorded msg=%s" %(msg))
+             msg_exist=True
+        bag.close()
+        if msg_exist == False:
+            rospy.loginfo("No msg recorded")
+        
+        #rospy.sleep(20)
+        #self.p_record.send_signal(subprocess.signal.SIGINT)
 
+#  - rosbag record -O result.bag -e '/harvest_act/result'
+#  - rosbag play big.bag --topics /harvest_act/goal
+
+        
 #CLI-Sim level           
 class CliSim(RootCli):
 
