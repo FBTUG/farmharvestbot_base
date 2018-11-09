@@ -4,6 +4,8 @@ Changelog for farmharvestbot_base
 
 current
 ------------------
+* new:vision: add vision_cv_feature_detector_example
+* Contributors: WuLung Hsu
 
 0.1.1 (2018-11-09)
 ------------------
