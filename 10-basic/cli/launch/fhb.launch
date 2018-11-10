@@ -14,6 +14,8 @@
 <arg name="cli_enabled" default="true"/>
 <arg name="harvest_enabled" default="true"/>
 <arg name="vision_enabled" default="true"/>
+<arg name="camera_enabled" default="false"/>
+<arg name="feature_detector_enabled" default="false"/>
 <arg name="arm_enabled" default="true"/>
 <arg name="fake_arm_enabled" default="false"/>
 <arg name="car_enabled" default="true"/>
@@ -23,7 +25,7 @@
 
 <!-- end switch args -->
 
-<!-- Start camera -->
+<!-- Start cli -->
 	<group if="$(arg cli_enabled)">
 	  <node pkg="farmharvestbot_cli" type="cli_node.py" name="fhb_cli"  output="screen">
 		<rosparam command="load" file="$(find farmharvestbot_cli)/param/cli.yaml"/>
@@ -44,6 +46,18 @@
 	  <node pkg="farmharvestbot_vision" type="vision_node.py" name="fhb_vision"  output="screen">
 		<rosparam command="load" file="$(find farmharvestbot_vision)/param/vision.yaml"/>
 	  </node>	 
+	<!-- Start camera -->
+		<group if="$(arg camera_enabled)">
+			<include file="$(find farmharvestbot_vision)/launch/vision_test.launch">
+			</include>
+		</group>
+	<!-- Start feature_detector -->
+		<group if="$(arg feature_detector_enabled)">
+		  <node pkg="farmharvestbot_vision" type="vision_cv_feature_detector_example.py" name="fhb_feature_detector"  output="screen">
+	  </node>	 
+
+		</group>
+
 	</group>
 
 	

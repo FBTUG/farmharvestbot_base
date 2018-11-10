@@ -9,6 +9,8 @@
 
 <!-- start switch args -->
 <arg name="vision_enabled" default="true"/>
+<arg name="camera_enabled" default="true"/>
+<arg name="feature_detector_enabled" default="false"/>
 <!-- end switch args -->
 
 <!-- Start vision -->
@@ -16,6 +18,19 @@
 	  <node pkg="farmharvestbot_vision" type="vision_node.py" name="fhb_vision"  output="screen">
 		<rosparam command="load" file="$(find farmharvestbot_vision)/param/vision.yaml"/>
 	  </node>	 
+	<!-- Start camera -->
+		<group if="$(arg camera_enabled)">
+			<include file="$(find farmharvestbot_vision)/launch/vision_test.launch">
+			</include>
+		</group>
+	<!-- Start feature_detector -->
+		<group if="$(arg feature_detector_enabled)">
+		  <node pkg="farmharvestbot_vision" type="vision_cv_feature_detector_example.py" name="fhb_feature_detector"  output="screen">
+	  </node>	 
+
+		</group>
+
 	</group>
+	
 
 </launch>

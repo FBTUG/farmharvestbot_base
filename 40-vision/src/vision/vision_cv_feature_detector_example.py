@@ -6,9 +6,9 @@ CompressedImage. It converts the CompressedImage into a numpy.ndarray,
 then detects and marks features in that image. It finally displays 
 and publishes the new image - again as CompressedImage topic.
 
-the sample come from: 
+Original: 
 'Simon Haller <simon.haller at uibk.ac.at>' with BSD licence
-
+http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
 """
 
 # Python libs
