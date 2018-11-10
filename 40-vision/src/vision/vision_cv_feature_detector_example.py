@@ -38,14 +38,14 @@ class image_feature:
         '''Initialize ros publisher, ros subscriber'''
         # topic where we publish
         self.image_pub = rospy.Publisher("/output/image_raw/compressed",
-            CompressedImage)
+            CompressedImage,queue_size = 1)
         # self.bridge = CvBridge()
 
         # subscribed Topic
-        self.subscriber = rospy.Subscriber("/image/compressed",
+        self.subscriber = rospy.Subscriber("/image_raw/compressed",
             CompressedImage, self.callback,  queue_size = 1)
         if VERBOSE :
-            print "subscribed to /camera/image/compressed"
+            print "subscribed to /image_raw/compressed"
 
 
     def callback(self, ros_data):
@@ -56,14 +56,16 @@ class image_feature:
 
         #### direct conversion to CV2 ####
         np_arr = np.fromstring(ros_data.data, np.uint8)
-        image_np = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
-        #image_np = cv2.imdecode(np_arr, cv2.IMREAD_COLOR) # OpenCV >= 3.0:
+        #image_np = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
+        image_np = cv2.imdecode(np_arr, cv2.IMREAD_COLOR) # OpenCV >= 3.0:
         
         #### Feature detectors using CV2 #### 
         # "","Grid","Pyramid" + 
         # "FAST","GFTT","HARRIS","MSER","ORB","SIFT","STAR","SURF"
         method = "GridFAST"
-        feat_det = cv2.FeatureDetector_create(method)
+        #feat_det = cv2.FeatureDetector_create(method)
+        feat_det = cv2.GFTTDetector_create()
+        
         time1 = time.time()
 
         # convert np image to grayscale
@@ -78,8 +80,8 @@ class image_feature:
             x,y = featpoint.pt
             cv2.circle(image_np,(int(x),int(y)), 3, (0,0,255), -1)
         
-        cv2.imshow('cv_img', image_np)
-        cv2.waitKey(2)
+        #cv2.imshow('cv_img', image_np)
+        #cv2.waitKey(2)
 
         #### Create CompressedIamge ####
         msg = CompressedImage()
@@ -94,7 +96,7 @@ class image_feature:
 def main(args):
     '''Initializes and cleanup ros node'''
     ic = image_feature()
-    rospy.init_node('image_feature', anonymous=True)
+    rospy.init_node('image_feature', anonymous=False)
     try:
         rospy.spin()
     except KeyboardInterrupt:
