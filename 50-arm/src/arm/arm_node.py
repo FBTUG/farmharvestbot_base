@@ -105,6 +105,7 @@ class ArmActSrv(FhbActSrv):
 # Rx serial, Tx /arm_ctrl_state reply to user
 class ArmNode(FhbNode):
     def __init__(self):
+        FhbNode.__init__(self,rospy.get_name())
         self.fba = None # farmbot class
         self.arm_ctrl_state_pub = None # arm_statusupdate publisher
         self.serial_rx_pub = None # serial rx publisher

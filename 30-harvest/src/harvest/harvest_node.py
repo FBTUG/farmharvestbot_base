@@ -52,6 +52,7 @@ class HarvestActSrv(FhbActSrv):
 # Rx serial, Tx /arm_ctrl_state reply to user
 class HarvestNode(FhbNode):
     def __init__(self):
+        FhbNode.__init__(self,rospy.get_name())
         self.fba = None # farmbot class
         self.actsrv = None 
         self.setup()
@@ -59,8 +60,6 @@ class HarvestNode(FhbNode):
     def setup(self):
         self.ha = harvest.Harvest() 
         self.actsrv = HarvestActSrv("harvest_act")
-
-    
 
 # main process loop        
 def main():

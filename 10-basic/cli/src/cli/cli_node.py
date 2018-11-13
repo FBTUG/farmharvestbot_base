@@ -251,6 +251,10 @@ class CliCar(RootCli):
 
 #CLI-Test level
 class CliTest(RootCli):
+    def __init__(self):
+        cmd.Cmd.__init__(self)
+        self.fsm_event_pub = rospy.Publisher('fsm_event', FSMEvent, queue_size=1)
+
     def do_test_exception(self,line):
         """Test exception condition"""
         int("a")
@@ -288,6 +292,22 @@ class CliTest(RootCli):
         
         #rospy.sleep(20)
         #self.p_record.send_signal(subprocess.signal.SIGINT)
+
+    def do_fsm_event(self,line):
+        """fsm test by manual publishing fsm tranisition events
+fsm_event [event]
+ex: fsm_event go_to_pos
+    send transition event to change fsm state
+    """
+        [ret,pars] = self._line_set(line,["joystick_mode"],"missing event information, use default: joystick_mode")
+        if self.fsm_event_pub:
+            fsm_event = FSMEvent()
+            fsm_event.header = std_msgs.msg.Header()
+            fsm_event.header.stamp = rospy.Time.now()
+            fsm_event.publisher = "cli"
+            fsm_event.event = pars[0]
+            self.fsm_event_pub.publish(fsm_event)
+            rospy.sleep(1)
 
 #  - rosbag record -O result.bag -e '/harvest_act/result'
 #  - rosbag play big.bag --topics /harvest_act/goal

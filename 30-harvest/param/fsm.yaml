@@ -1,0 +1,53 @@
+# Initail state of the FSM
+initial_state: "STANDBY"
+
+# Define global transitions. Available from all states.
+global_transitions:
+  emergency_stop: "EMERGENCY_STOP"
+  joystick_mode: "JOYSTICK_CONTROL"
+
+# Define state transitions
+states:
+  STANDBY:
+    transitions:
+      start_harvesting: "NEXT_LANE"
+      go_to_pos: "GO_TO_POS"
+      run_test: "TEST"
+      run_calibrate: "GO_TO_POS"
+  EMERGENCY_STOP:
+    transitions:
+      reset: "STANDBY"
+  JOYSTICK_CONTROL:
+    transitions:
+      cmd_mode: "STANDBY"
+  GO_TO_POS:
+    transitions:
+      finish: "STANDBY"
+      abort: "STANDBY"
+  TEST:
+    transitions:
+      finish: "STANDBY"
+      abort: "STANDBY"
+  CALIBRATION:
+    transitions:
+      finish: "STANDBY"
+      abort: "STANDBY"
+  NEXT_LANE:
+    transitions:
+      finish: "STANDBY"
+      abort: "STANDBY"
+      arrive_lane: "NEXT_POS"
+  NEXT_POS:
+    transitions:
+      abort: "STANDBY"
+      end_of_lane: "NEXT_LANE"
+      arrive_pos: "FIND_FRUIT"
+  FIND_FRUIT:
+    transitions:
+      abort: "STANDBY"
+      no_fruit: "NEXT_POS"
+      fruit_found: "HARVEST_FRUIT"
+  HARVEST_FRUIT:
+    transitions:
+      abort: "STANDBY"
+      finish: "FIND_FRUIT"

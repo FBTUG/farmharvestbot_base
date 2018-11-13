@@ -126,4 +126,11 @@ class FhbActSrv(object):
 #all nodes suggest to have this parent
 class FhbNode():
     def __init__(self, name):
-        pass
+        self.name = name
+        self.fsm_state = ""
+        rospy.Subscriber('fsm_state', FSMState, self.cbFSMState)
+
+    #override this callback in child class if you want to have different behavior
+    def cbFSMState(self,fsm_state):
+        self.fsm_state = fsm_state.state
+        rospy.loginfo("%s : change state to %s" % (self.name,self.fsm_state))

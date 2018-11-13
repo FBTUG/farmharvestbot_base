@@ -27,6 +27,8 @@ add_message_files(
   SensorState.msg
   VersionInfo.msg
   Sound.msg
+  FSMEvent.msg
+  FSMState.msg
 )
 
 add_action_files(

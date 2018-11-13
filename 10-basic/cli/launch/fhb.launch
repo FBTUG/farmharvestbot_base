@@ -21,6 +21,7 @@
 <arg name="car_enabled" default="true"/>
 <arg name="sim_enabled" default="false"/>
 <arg name="test_enabled" default="false"/>
+<arg name="fsm_enabled" default="true"/>
 
 
 <!-- end switch args -->
@@ -91,6 +92,12 @@
 	<group if="$(arg test_enabled)">
 	  <node pkg="farmharvestbot_test" type="test_node.py" name="fhb_test"  output="screen">
 		<rosparam command="load" file="$(find farmharvestbot_test)/param/test.yaml"/>
+	  </node>	 
+	</group>
+<!-- Start fsm -->
+	<group if="$(arg fsm_enabled)">
+	  <node pkg="farmharvestbot_harvest" type="fsm_node.py" name="fhb_fsm"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_harvest)/param/fsm.yaml"/>
 	  </node>	 
 	</group>
 

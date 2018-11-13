@@ -80,6 +80,7 @@ class VisionActSrv(FhbActSrv):
 # vision node
 class VisionNode(FhbNode):
     def __init__(self):
+        FhbNode.__init__(self,rospy.get_name())
         self.vision = None # 
         
     def setup(self):

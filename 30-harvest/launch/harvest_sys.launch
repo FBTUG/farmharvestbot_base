@@ -9,12 +9,18 @@
 
 <!-- start switch args -->
 <arg name="harvest_enabled" default="true"/>
+<arg name="fsm_enabled" default="true"/>
 <!-- end switch args -->
 
 <!-- Start harvest -->
 	<group if="$(arg harvest_enabled)">
 	  <node pkg="farmharvestbot_harvest" type="harvest_node.py" name="fhb_harvest"  output="screen">
 		<rosparam command="load" file="$(find farmharvestbot_harvest)/param/harvest.yaml"/>
+	  </node>	 
+	</group>
+		<group if="$(arg fsm_enabled)">
+	  <node pkg="farmharvestbot_harvest" type="fsm_node.py" name="fhb_fsm"  output="screen">
+		<rosparam command="load" file="$(find farmharvestbot_harvest)/param/fsm.yaml"/>
 	  </node>	 
 	</group>
 	
