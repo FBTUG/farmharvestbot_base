@@ -5,7 +5,10 @@ Changelog for farmharvestbot_base
 current
 ------------------
 * new:vision: add vision_cv_feature_detector_example
-* Contributors: WuLung Hsu
+* new:all: add fsm support
+* new:vision:add local file image publisher debug code
+* new:car: add fhb car interface
+* Contributors: Wei-Jia Huang,WuLung Hsu
 
 0.1.1 (2018-11-09)
 ------------------

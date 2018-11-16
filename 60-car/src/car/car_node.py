@@ -12,7 +12,7 @@
 # Test Hint:
 
 import rospy
-import vision
+import car
 
 import actionlib
 from actionlib_msgs.msg import GoalStatus
@@ -81,10 +81,10 @@ class CarActSrv(FhbActSrv):
 class CarNode(FhbNode):
     def __init__(self):
         FhbNode.__init__(self,rospy.get_name())
-        self.vision = None # 
+        self.car = None # 
         
     def setup(self):
-        self.vision = vision.Vision() 
+        self.car = car.Car() 
     
 
 # main process loop        
