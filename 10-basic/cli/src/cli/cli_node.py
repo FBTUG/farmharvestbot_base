@@ -27,7 +27,7 @@ from fhb_utils import Consts,FhbActSrv,FhbNode
 
 import subprocess, os, signal
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 CMD_VERSION = "0.1"
 PRJNAME="farmharvestbot_base"
 

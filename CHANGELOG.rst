@@ -2,7 +2,11 @@
 Changelog for farmharvestbot_base
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-current
+Current 
+------------------
+
+
+0.1.2 (2018-11-18)
 ------------------
 * new:vision: add vision_cv_feature_detector_example
 * new:all: add fsm support
@@ -10,6 +14,7 @@ current
 * new:car: add fhb car interface
 * new:cli: add action server and example to bringup web access 
 * new:cli: add web page actionlib client to access CLI success 
+* docs:version: V0.1.2 public release
 * Contributors: Wei-Jia Huang,WuLung Hsu
 
 0.1.1 (2018-11-09)
