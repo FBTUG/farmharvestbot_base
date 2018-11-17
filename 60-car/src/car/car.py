@@ -12,7 +12,7 @@ class CarBase(object):
         self._gain=0.1 # float 0-1
         self._tune=0   # float left/right
         self._style=0  # control wheel number: 2-wheel=2, 1-wheel=1
-        self._wheel_dist=100 # wheel distance between control wheel, unit: mm
+        self._wheel_dist=100.0 # wheel distance between control wheel, unit: mm
         self._speed_level=0 # [ high_speed=3, middle_speed=2, low_speed=1]
         self._speed_to_gain={1:0.3,2:0.6,3:1.0}
         self.m_drv= None#MotorDriver()

@@ -27,9 +27,11 @@ from fhb_utils import Consts,FhbActSrv,FhbNode
 
 import subprocess, os, signal
 
-VERSION = "0.0.5"
+VERSION = "0.1.1"
 CMD_VERSION = "0.1"
 PRJNAME="farmharvestbot_base"
+
+ACTID_CLI_CMD=1
 
 
 # CLI root class, all CLI cmd based on this
@@ -74,17 +76,45 @@ class BaseCli(RootCli):
         self.cli_vision = CliVision()
         self.cli_arm = CliArm()
         self.cli_car = CliCar()
+        
+        self.cas_mode=0 #0-normal mode, 1: json mode
+        self.cas= CliActSrv("cli_act")
+        self.cas.assign_cmdfun(self.actioncmd)
+        self.cas_ret = []
 
 ############ cli maintain ####################
+
     def do_quit(self, line):
-        """quit"""
+        """quit"""      
         self.user_quit = True
         return True
     #do_EOF = do_quit
     def do_version(self,line):
         """Report software version"""
-        output = "V" + VERSION
-        print(output)
+        out = "V%s" %(VERSION)
+        rospy.loginfo(out)
+        if self.cas_mode == 1:
+            #json_str = "{\n \"%s\" : \"%s\"\n}" %("response",out)            
+            json_str = '{ "%s" : "%s"}' %("response",out)            
+            return json_str
+        else:
+            return out
+    # process cmd from actionserver
+    # line start by ! will return json format
+    def actioncmd(self,line):
+        rospy.loginfo("actioncmd:%s" %(line))
+        self.cas_mode=0
+        if len(line)>1 and line[0]=="!":
+            self.cas_mode=1 #json
+            line = line[1:]
+        #self.cas_ret = []
+        str_ret = self.onecmd(line)
+        if str_ret:
+            return str_ret
+        else:
+            return '!KO'
+        #return "\n".join(self.cas_ret)
+        
 
 ############ sub level commands ####################            
     def do_sys(self,line):
@@ -353,10 +383,55 @@ ex: sim_turtlesim_key U
         if self.cmd_pub:
             self.cmd_pub.publish(cmd)
 
+#Cli action server
+class CliActSrv(FhbActSrv):
+
+    def __init__(self, name):
+        self._action_name = name
+        self._as = actionlib.SimpleActionServer(self._action_name, FhbActAction, execute_cb=self.execute_cb, auto_start = False)
+        self._as.start()
+        self.cmdfun = None
+    def __del__(self):
+        print "in CliActSrv del"
+        self._as.__del__()
+        del self._as
+        self._as = None
+    def assign_cmdfun(self,cmdfun):
+        self.cmdfun = cmdfun
+    def execute_cb(self, goal):
+        # helper variables
+        r = rospy.Rate(1)
+        success = True
+        
+        # setup feedback msg
+        self._feedback.notice_id = 1
+        self._feedback.progrsss=10
+        
+        # publish info to the console for the user
+        rospy.loginfo('%s: Executing...' % (self._action_name))
+        
+        # start executing the action
+        if goal.act_id>=Consts.ACTID_START_CLI:
+            if goal.act_id == Consts.ACTID_START_CLI+ACTID_CLI_CMD:
+                askcmd = goal.line
+                cmd_ret = self.cmdfun(askcmd)
+        else:
+            success = False
+
+        if success:
+            self._result.status = GoalStatus.SUCCEEDED #1 # 0-ok, >1 error code
+            self._result.error_level =0 # 0-warning, 1-error, 2-fatal error 
+            self._result.error_msg =cmd_ret 
+            rospy.loginfo('%s Succeeded :%s' % (self._action_name,self._result.error_msg))
+            self._as.set_succeeded(self._result)
+        else:
+            self.success_result("fail, not act_id not in valid range")
+
 
 def main():
     
     rospy.init_node('base_cli')
+    #cas = CliActSrv("cli_act")
     rospy.loginfo("----- %s V%s" %(PRJNAME,str(VERSION)))
     rospy.loginfo("----- CLI need to run with ros master exist!" )
     bcli = BaseCli()
@@ -364,7 +439,9 @@ def main():
         try:
             
             bcli.cmdloop()
+
             if bcli.user_quit:
+                rospy.signal_shutdown("test")
                 break
             
             #rospy.spin()
@@ -376,6 +453,7 @@ def main():
         except:
             traceback.print_exc()
             pass
+
        
 
 if __name__ == '__main__':
