@@ -9,6 +9,7 @@ current
 * new:vision:add local file image publisher debug code
 * new:car: add fhb car interface
 * new:cli: add action server and example to bringup web access 
+* new:cli: add web page actionlib client to access CLI success 
 * Contributors: Wei-Jia Huang,WuLung Hsu
 
 0.1.1 (2018-11-09)
