@@ -4,6 +4,9 @@ Changelog for farmharvestbot_base
 
 Current 
 ------------------
+* add:ci:update travis_ci config file for test
+* fix:test:enable first unit-test case
+* Contributors: WuLung Hsu
 
 
 0.1.2 (2018-11-18)

@@ -37,4 +37,4 @@ catkin_package(
 #############
 ## Testing ##
 #############
-
+catkin_add_nosetests(src/test/test_node.py)
