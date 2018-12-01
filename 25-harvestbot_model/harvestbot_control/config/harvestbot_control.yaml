@@ -1,0 +1,38 @@
+harvestbot:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+  
+  # Controllers ---------------------------------------
+  wheel_left_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint_left_wheel
+    pid: {p: 10.0, i: 0.01, d: 1.0}
+  wheel_right_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint_right_wheel
+    pid: {p: 10.0, i: 0.01, d: 1.0}
+
+  slide_z_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint_slide_z
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  slide_y_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint_slide_y
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  slide_x_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint_slide_x
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+
+  gripper_rotate_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint_gripper_rotate
+    pid: {p: 10.0, i: 0.1, d: 0.01}
+
+  knife_position_controller:
+    type: effort_controllers/JointPositionController
+    joint: joint_knife
+    pid: {p: 1, i: 0.01, d: 0.01}

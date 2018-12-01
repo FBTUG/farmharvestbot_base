@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <name>harvestbot_description</name>
+  <version>0.0.0</version>
+  <description>The harvestbot_description package</description>
+
+  <maintainer email="aga3134@gmail.com">Aga</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website"></url>
+  <url type="bugtracker"></url>
+  <url type="repository"></url>
+
+  <author email="aga3134@gmail.com">Aga</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>joint_state_publisher</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rviz</run_depend>
+
+  <export>
+  </export>
+</package>

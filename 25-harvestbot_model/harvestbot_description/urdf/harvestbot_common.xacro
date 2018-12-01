@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot name="harvestbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="PI" value="3.1415926"/>
+    <xacro:macro name="visualAsCollision" params="*origin *geometry *material">
+        <collision>
+            <xacro:insert_block name="origin" />
+            <xacro:insert_block name="geometry" />
+        </collision>
+
+        <visual>
+            <xacro:insert_block name="origin" />
+            <xacro:insert_block name="geometry" />
+            <xacro:insert_block name="material" />
+        </visual>
+    </xacro:macro>
+
+    <xacro:macro name="box_link" params="name depth width length mass material">
+        <link name="${name}">
+            <xacro:visualAsCollision>
+                <origin xyz="0 0 ${length/2}" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${depth} ${width} ${length}"/>
+                </geometry>
+                <material name="${material}"/>
+            </xacro:visualAsCollision>
+            
+            <inertial>
+                <origin xyz="0 0 ${length/2}" rpy="0 0 0"/>
+                <mass value="${mass}"/>
+                <inertia
+                ixx="${mass / 12.0 * (width*width + length*length)}" ixy="0.0" ixz="0.0"
+                iyy="${mass / 12.0 * (length*length + depth*depth)}" iyz="0.0"
+                izz="${mass / 12.0 * (depth*depth + width*width)}"/>
+            </inertial>
+        </link>
+    </xacro:macro>
+</robot>

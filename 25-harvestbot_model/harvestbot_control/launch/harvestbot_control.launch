@@ -1,0 +1,19 @@
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find harvestbot_control)/config/harvestbot_control.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/harvestbot" args="joint_state_controller
+	  wheel_left_position_controller wheel_right_position_controller
+    slide_z_position_controller slide_y_position_controller slide_x_position_controller
+    gripper_rotate_controller knife_position_controller"/>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	respawn="false" output="screen">
+    <remap from="/joint_states" to="/harvestbot/joint_states" />
+  </node>
+
+</launch>

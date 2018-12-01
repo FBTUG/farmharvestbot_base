@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<robot name="harvestbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    
+    <xacro:property name="body_w" value="1"/>
+    <xacro:property name="body_h" value="0.5"/>
+    <xacro:property name="body_d" value="1"/>
+    <xacro:property name="body_mass" value="20"/>
+    <xacro:property name="back_wheel_r" value="0.1"/>
+    <xacro:property name="back_wheel_offset" value="-0.3"/>
+    <xacro:property name="back_wheel_mass" value="0.1"/>
+    <xacro:property name="wheel_r" value="0.3"/>
+    <xacro:property name="wheel_h" value="0.1"/>
+    <xacro:property name="wheel_mass" value="1"/>
+    <xacro:property name="wheel_offset" value="0.2"/>
+    
+    <!-- ==================body======================= -->
+    <xacro:box_link name="vehicle_body" depth="${body_d}" width="${body_w}" length="${body_h}" mass="${body_mass}" material="orange"/>
+
+    <!-- ==================back wheel======================= -->
+    <link name="back_wheel">
+        <xacro:visualAsCollision>
+            <origin xyz="${back_wheel_offset} 0 0" rpy="0 0 0"/>
+            <geometry>
+                <sphere radius="${back_wheel_r}"/>
+            </geometry>
+            <material name="grey"/>
+        </xacro:visualAsCollision>
+
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${back_wheel_mass}"/>
+            <inertia
+            ixx="${back_wheel_mass*2/5.0*back_wheel_r*back_wheel_r}" ixy="0.0" ixz="0.0"
+            iyy="${back_wheel_mass*2/5.0*back_wheel_r*back_wheel_r}" iyz="0.0"
+            izz="${back_wheel_mass*2/5.0*back_wheel_r*back_wheel_r}"/>
+        </inertial>
+    </link>
+
+    <joint name="joint_back_wheel" type="fixed">
+        <parent link="vehicle_body"/>
+        <child link="back_wheel"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- ==================wheel======================= -->
+    <xacro:macro name="wheel" params="suffix reflect">
+        <link name="${suffix}_wheel">
+            <xacro:visualAsCollision>
+                <origin xyz="0 0 0" rpy="${PI*0.5} 0 0"/>
+                <geometry>
+                    <cylinder radius="${wheel_r}" length="${wheel_h}"/>
+                </geometry>
+                <material name="grey"/>
+            </xacro:visualAsCollision>
+
+            <inertial>
+                <origin xyz="0 0 0" rpy="${PI*0.5} 0 0"/>
+                <mass value="${wheel_mass}"/>
+                <inertia
+                ixx="${wheel_mass/12.0*(3*wheel_r*wheel_r+wheel_h*wheel_h)}" ixy="0.0" ixz="0.0"
+                iyy="${wheel_mass/12.0*(3*wheel_r*wheel_r+wheel_h*wheel_h)}" iyz="0.0"
+                izz="${wheel_mass/12.0*(3*wheel_r*wheel_r+wheel_h*wheel_h)}"/>
+            </inertial>
+        </link>
+
+        <joint name="joint_${suffix}_wheel" type="continuous">
+            <parent link="vehicle_body"/>
+            <child link="${suffix}_wheel"/>
+            <axis xyz="0 1 0"/>
+            <origin xyz="${wheel_offset} ${reflect*(body_w+wheel_h)*0.5} ${wheel_r-back_wheel_r}" rpy="0 0 0"/>
+        </joint>
+
+    </xacro:macro>
+
+    <xacro:wheel suffix="left" reflect="1"/>
+    <xacro:wheel suffix="right" reflect="-1"/>
+
+    <!-- ======================transitions=============================-->
+    <transmission name="left_wheel_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_left_wheel">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_left">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="right_wheel_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_right_wheel">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_right">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+</robot>

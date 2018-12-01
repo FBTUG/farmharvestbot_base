@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<robot name="harvestbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="base_w" value="1"/>
+    <xacro:property name="base_h" value="0.1"/>
+    <xacro:property name="base_d" value="1"/>
+    <xacro:property name="base_mass" value="1"/>
+    <xacro:property name="arm_w" value="0.08"/>
+    <xacro:property name="arm_d" value="0.05"/>
+    <xacro:property name="arm_len_x" value="1"/>
+    <xacro:property name="arm_len_y" value="1"/>
+    <xacro:property name="arm_len_z" value="1"/>
+    <xacro:property name="arm_mass_x" value="1"/>
+    <xacro:property name="arm_mass_y" value="1"/>
+    <xacro:property name="arm_mass_z" value="1"/>
+    <xacro:property name="holder_size" value="0.1"/>
+    <xacro:property name="holder_mass" value="0.2"/>
+    <xacro:property name="camera_size" value="0.05"/>
+    <xacro:property name="camera_mass" value="0.1"/>
+    <!-- ==================base======================= -->
+    <xacro:box_link name="arm_base" depth="${base_d}" width="${base_w}" length="${base_h}" mass="${base_mass}" material="grey"/>
+    
+    <!-- ==================arm======================= -->
+    <xacro:box_link name="arm_z_left" depth="${arm_d}" width="${arm_w}" length="${arm_len_z}" mass="${arm_mass_z}" material="blue"/>
+    
+    <joint name="joint_arm_z_left" type="fixed">
+        <parent link="arm_base"/>
+        <child link="arm_z_left"/>
+        <origin xyz="0 ${(base_w-arm_w)/2} ${base_h}" rpy="0 0 0"/>
+    </joint>
+
+    <xacro:box_link name="arm_z_right" depth="${arm_d}" width="${arm_w}" length="${arm_len_z}" mass="${arm_mass_z}" material="blue"/>
+    
+    <joint name="joint_arm_z_right" type="fixed">
+        <parent link="arm_base"/>
+        <child link="arm_z_right"/>
+        <origin xyz="0 ${-(base_w-arm_w)/2} ${base_h}" rpy="0 0 0"/>
+    </joint>
+
+    <xacro:box_link name="arm_y" depth="${arm_d}" width="${arm_len_y}" length="${arm_w}" mass="${arm_mass_y}" material="green"/>
+    
+    <joint name="joint_slide_z" type="prismatic">
+        <parent link="arm_z_left"/>
+        <child link="arm_y"/>
+        <origin xyz="${arm_d} ${-(arm_len_y-arm_w)/2} ${arm_len_z/2}" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="${-arm_len_z/2+arm_w}" upper="${arm_len_z/2-arm_w}" effort="100" velocity="10" />
+    </joint>
+
+    <xacro:box_link name="arm_x_holder" depth="${holder_size}" width="${holder_size}" length="${holder_size/2}" mass="${holder_mass}" material="orange"/>
+    
+    <joint name="joint_slide_y" type="prismatic">
+        <parent link="arm_y"/>
+        <child link="arm_x_holder"/>
+        <origin xyz="0 0 ${arm_w}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="${-arm_len_y/2+arm_w*1.5}" upper="${arm_len_y/2-arm_w*1.5}" effort="100" velocity="10" />
+    </joint>
+
+    <xacro:box_link name="arm_x" depth="${arm_len_x}" width="${arm_w}" length="${arm_d}" mass="${arm_mass_x}" material="red"/>
+    
+    <joint name="joint_slide_x" type="prismatic">
+        <parent link="arm_x_holder"/>
+        <child link="arm_x"/>
+        <origin xyz="0 0 ${arm_d}" rpy="0 0 0"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="${-arm_len_x/2+holder_size}" upper="${arm_len_x/2-holder_size}" effort="100" velocity="10" />
+    </joint>
+
+    <xacro:box_link name="gripper_holder" depth="${holder_size}" width="${holder_size}" length="${holder_size/2}" mass="${holder_mass}" material="orange"/>
+    
+    <joint name="joint_gripper_holder" type="fixed">
+        <parent link="arm_x"/>
+        <child link="gripper_holder"/>
+        <origin xyz="${(arm_len_x-holder_size)/2} 0 ${holder_size/2}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- ======================sensors=============================-->
+    <xacro:box_link name="camera_link" depth="${camera_size/2}" width="${camera_size}" length="${camera_size/2}" mass="${camera_mass}" material="black"/>
+    
+    <joint name="joint_camera_link" type="fixed">
+        <parent link="gripper_holder"/>
+        <child link="camera_link"/>
+        <origin xyz="0 0 ${holder_size/2}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- generate an optical frame http://www.ros.org/reps/rep-0103.html#suffix-frames
+      so that ros and opencv can operate on the camera frame correctly -->
+    <joint name="camera_optical_joint" type="fixed">
+        <!-- these values have to be these values otherwise the gazebo camera image
+            won't be aligned properly with the frame it is supposedly originating from -->
+        <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+        <parent link="camera_link"/>
+        <child link="camera_link_optical"/>
+    </joint>
+
+    <link name="camera_link_optical">
+    </link>
+
+    <link name="hokuyo_link">
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+            <box size="0.1 0.1 0.1"/>
+            </geometry>
+        </collision>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://harvestbot_description/meshes/hokuyo.dae"/>
+            </geometry>
+        </visual>
+
+        <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+        </inertial>
+    </link>
+
+    <joint name="joint_hokuyo_link" type="fixed">
+        <parent link="arm_base"/>
+        <child link="hokuyo_link"/>
+        <origin xyz="${(base_d-0.1)/2} 0 ${base_h+0.03}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- ======================transitions=============================-->
+    <transmission name="slide_z_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_slide_z">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_slide_z">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="slide_y_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_slide_y">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_slide_y">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+
+    <transmission name="slide_x_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_slide_x">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_slide_x">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+</robot>

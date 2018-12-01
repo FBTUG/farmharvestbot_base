@@ -1,0 +1,13 @@
+須安裝gazebo_ros_pkgs
+http://gazebosim.org/tutorials?tut=ros_installing&fbclid=IwAR2LlxwI3-s2LaOrcWPE-FSZYbAoyndSzWMt_WpyePqJ6j40pdA0O_w5Rbg
+
+以rviz觀看harvestbot:
+roslaunch harvestbot_description harvestbot_rviz.launch
+在gazebo模擬時可看到camera跟laser scan訊號
+這邊會自己讀urdf，跟gazebo模擬一起用時機器人定義會互相衝到造成rviz機器人沒跟gazebo一起動
+
+以gazebo模擬harvestbot:
+roslaunch harvestbot_gazebo harvestbot_world.launch
+
+在gazebo模擬時可打開rqt發送topic控制harvestbot:
+roslaunch harvestbot_control harvestbot_rqt.launch

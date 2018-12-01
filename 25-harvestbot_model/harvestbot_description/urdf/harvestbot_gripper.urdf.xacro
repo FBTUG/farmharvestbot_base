@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<robot name="harvestbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="gripper_size" value="0.1"/>
+    <xacro:property name="gripper_mass" value="0.2"/>
+
+    <xacro:box_link name="gripper_body" depth="${gripper_size}" width="${gripper_size*1.5}" length="${gripper_size*0.3}" mass="${gripper_mass}" material="blue"/>
+   
+    <xacro:box_link name="gripper_finger" depth="${gripper_size}" width="${gripper_size*0.5}" length="${gripper_size*0.3}" mass="${gripper_mass*0.2}" material="blue"/>
+
+    <joint name="joint_gripper_finger" type="fixed">
+        <parent link="gripper_body"/>
+        <child link="gripper_finger"/>
+        <origin xyz="${gripper_size} ${-gripper_size*0.5} 0" rpy="0 0 0"/>
+    </joint>
+
+    <xacro:box_link name="gripper_knife" depth="${gripper_size}" width="${gripper_size*0.2}" length="${gripper_size*0.05}" mass="${gripper_mass*0.5}" material="white"/>
+
+    <joint name="joint_knife" type="prismatic">
+        <parent link="gripper_body"/>
+        <child link="gripper_knife"/>
+        <origin xyz="${gripper_size} ${gripper_size*0.5} ${gripper_size*0.15}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="${-gripper_size*0.65}" upper="0" effort="100" velocity="10" />
+    </joint>
+
+    <!-- ======================transitions=============================-->
+    <transmission name="knife_tran">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_knife">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="motor_knife">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+    </transmission>
+</robot>
