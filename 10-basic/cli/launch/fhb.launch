@@ -7,12 +7,13 @@
 	-->
 	
 <!-- the things that are "on" by default: 
- - cli_enabled, harvest_enabled, vision_enabled,arm_enabled,car_enabled
+ - cli_enabled, harvest_enabled, vision_enabled,arm_enabled,car_enabled, fsm_enabled
 -->
 
 <!-- start switch args -->
 <arg name="cli_enabled" default="false"/>
 <arg name="harvest_enabled" default="true"/>
+<arg name="model_enabled" default="true"/>
 <arg name="vision_enabled" default="true"/>
 <arg name="camera_enabled" default="false"/>
 <arg name="feature_detector_enabled" default="false"/>
@@ -21,7 +22,7 @@
 <arg name="car_enabled" default="true"/>
 <arg name="sim_enabled" default="false"/>
 <arg name="test_enabled" default="false"/>
-<arg name="fsm_enabled" default="true"/>
+<arg name="fsm_enabled" default="false"/>
 
 
 <!-- end switch args -->
@@ -31,6 +32,13 @@
 	  <node pkg="farmharvestbot_cli" type="cli_node.py" name="fhb_cli"  output="screen">
 		<rosparam command="load" file="$(find farmharvestbot_cli)/param/cli.yaml"/>
 	  </node>	 
+	</group>
+
+<!-- Start model -->
+	<group if="$(arg model_enabled)">
+		<include file="$(find harvestbot_gazebo)/launch/harvestbot_world.launch" />
+		<!--<include file="$(find harvestbot_control)/launch/harvestbot_rqt.launch" />-->
+		 
 	</group>
 
 
